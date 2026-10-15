@@ -3,8 +3,8 @@
  * Genera los index.html legales a partir del config/config.json.
  *
  * Lee legal.<section> (policy, terms), convierte cada markdown indicado en
- * HTML y lo escribe en <section>/<code>/index.html
- * (p. ej. legal/policy/es-es/index.html, legal/terms/es-es/index.html).
+ * HTML y lo escribe en docs/legal/<section>/<code>/index.html
+ * (p. ej. docs/legal/policy/es-es/index.html, docs/legal/terms/es-es/index.html).
  *
  * Uso: node scripts/generate-legal.js   (o: npm run generate:legal)
  */
@@ -14,7 +14,7 @@ const path = require('path');
 
 const projectRoot = path.resolve(__dirname, '..');
 const configPath = path.join(projectRoot, 'config', 'config.json');
-const outputRoot = path.join(projectRoot, 'legal');
+const outputRoot = path.join(projectRoot, 'docs', 'legal');
 
 const sections = ['policy', 'terms'];
 
@@ -331,7 +331,7 @@ function generate() {
     }
     ensureFile(path.join(outputRoot, 'index.html'), buildRedirectPage('policy/index.html'));
 
-    console.log(`\nSe han generado ${generatedFiles.length} ficheros en legal/`);
+    console.log(`\nSe han generado ${generatedFiles.length} ficheros en docs/legal/`);
 }
 
 generate();
