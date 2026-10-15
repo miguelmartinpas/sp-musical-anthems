@@ -1,0 +1,17 @@
+{
+  "name": "sp-musical-anthems",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate:legal": "node scripts/generate-legal.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-personal:miguelmartinpas/sp-musical-anthems.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

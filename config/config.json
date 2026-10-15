@@ -1,0 +1,64 @@
+{
+    "legal": {
+        "policy": [
+            {
+                "code": "ca-es",
+                "source": "../app-boilerplate/src/content/privacy-policy/v2/ca-es.md"
+            },
+            {
+                "code": "en-uk",
+                "source": "../app-boilerplate/src/content/privacy-policy/v2/en-uk.md"
+            },
+            {
+                "code": "en-us",
+                "source": "../app-boilerplate/src/content/privacy-policy/v2/en-us.md"
+            },
+            {
+                "code": "es-es",
+                "source": "../app-boilerplate/src/content/privacy-policy/v2/es-es.md"
+            },
+            {
+                "code": "eu-es",
+                "source": "../app-boilerplate/src/content/privacy-policy/v2/eu-es.md"
+            },
+            {
+                "code": "gl-es",
+                "source": "../app-boilerplate/src/content/privacy-policy/v2/gl-es.md"
+            },
+            {
+                "code": "va-es",
+                "source": "../app-boilerplate/src/content/privacy-policy/v2/va-es.md"
+            }
+        ],
+        "terms": [
+            {
+                "code": "ca-es",
+                "source": "../app-boilerplate/src/content/terms-of-use/ca-es.md"
+            },
+            {
+                "code": "en-uk",
+                "source": "../app-boilerplate/src/content/terms-of-use/en-uk.md"
+            },
+            {
+                "code": "en-us",
+                "source": "../app-boilerplate/src/content/terms-of-use/en-us.md"
+            },
+            {
+                "code": "es-es",
+                "source": "../app-boilerplate/src/content/terms-of-use/es-es.md"
+            },
+            {
+                "code": "eu-es",
+                "source": "../app-boilerplate/src/content/terms-of-use/eu-es.md"
+            },
+            {
+                "code": "gl-es",
+                "source": "../app-boilerplate/src/content/terms-of-use/gl-es.md"
+            },
+            {
+                "code": "va-es",
+                "source": "../app-boilerplate/src/content/terms-of-use/va-es.md"
+            }
+        ]
+    }
+}
