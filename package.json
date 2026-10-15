@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate:legal": "node scripts/generate-legal.js"
+    "generate:legal": "node scripts/generate-legal.js",
+    "open:policy": "open https://miguelmartinpas.github.io/sp-musical-anthems/legal/policy/index.html",
+    "open:terms": "open https://miguelmartinpas.github.io/sp-musical-anthems/legal/terms/index.html"
   },
   "repository": {
     "type": "git",
