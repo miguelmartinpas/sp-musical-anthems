@@ -11,12 +11,21 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+    DEFAULT_THEME,
+    LEGAL_THEMES,
+    renderLegalPlaceholders,
+} = require('./legal-themes');
 
 const projectRoot = path.resolve(__dirname, '..');
 const configPath = path.join(projectRoot, 'config', 'config.json');
 const outputRoot = path.join(projectRoot, 'docs', 'legal');
 
 const sections = ['policy', 'terms'];
+
+// Solo se generan los themes cuyo id termina en "-musical-anthems".
+const THEME_SUFFIX = '-musical-anthems';
+const selectedThemes = LEGAL_THEMES.filter((theme) => theme.id.endsWith(THEME_SUFFIX));
 
 // ---------------------------------------------------------------------------
 // Conversión de markdown a HTML (subconjunto: encabezados, listas, tablas,
@@ -253,7 +262,7 @@ ${content}
 }
 
 // ---------------------------------------------------------------------------
-// Índices de redirección (solo se crean si no existen; no se sobreescriben)
+// Índices de redirección
 // ---------------------------------------------------------------------------
 
 function buildRedirectPage(target) {
@@ -275,14 +284,23 @@ function buildRedirectPage(target) {
 
 
 
-function ensureFile(filePath, html) {
+function writeFile(filePath, html) {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    if (fs.existsSync(filePath)) {
-        console.log(`[skip] ${path.relative(projectRoot, filePath)} ya existe; no se modifica.`);
-        return;
-    }
     fs.writeFileSync(filePath, html, 'utf8');
-    console.log(`[ok] ${path.relative(projectRoot, filePath)}`);
+}
+
+function writeRedirect(filePath, target) {
+    writeFile(filePath, buildRedirectPage(target));
+    console.log(`[redirect] ${path.relative(projectRoot, filePath)} -> ${target}`);
+}
+
+function assertPlaceholdersResolved(markdown, section, themeId, code) {
+    const pending = ['{{appName}}', '{{supportEmail}}'].filter((token) => markdown.includes(token));
+    if (pending.length > 0) {
+        throw new Error(
+            `${section}/${themeId}/${code}: quedan tokens sin sustituir (${pending.join(', ')})`
+        );
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -300,38 +318,53 @@ function generate() {
             continue;
         }
 
-        for (const item of items) {
-            if (!item?.code || !item?.source) {
-                console.warn(`[aviso] ${section}: entrada sin code/source; se omite.`, item);
-                continue;
+        const locales = items.map((item) => item?.code).filter(Boolean);
+        const defaultLocale = locales.includes('en-uk') ? 'en-uk' : locales[0] ?? 'en-uk';
+
+        for (const theme of selectedThemes) {
+            for (const item of items) {
+                if (!item?.code || !item?.source) {
+                    console.warn(`[aviso] ${section}: entrada sin code/source; se omite.`, item);
+                    continue;
+                }
+
+                // Las rutas del config son relativas a la raíz del proyecto
+                const sourcePath = path.resolve(projectRoot, item.source);
+                if (!fs.existsSync(sourcePath)) {
+                    console.error(`[error] ${section}/${item.code}: no existe el fichero de origen ${sourcePath}`);
+                    continue;
+                }
+
+                const sourceMarkdown = fs.readFileSync(sourcePath, 'utf8');
+                const markdown = renderLegalPlaceholders(sourceMarkdown, theme.id);
+                assertPlaceholdersResolved(markdown, section, theme.id, item.code);
+
+                const content = convertMarkdownToHtml(markdown);
+                const outputPath = path.join(outputRoot, section, theme.id, item.code, 'index.html');
+
+                writeFile(outputPath, buildDocument(item.code, content));
+                generatedFiles.push(path.relative(projectRoot, outputPath));
+                console.log(
+                    `[ok] ${path.relative(projectRoot, outputPath)}  <-  ${path.relative(projectRoot, sourcePath)}`
+                );
             }
 
-            // Las rutas del config son relativas a la raíz del proyecto
-            const sourcePath = path.resolve(projectRoot, item.source);
-            if (!fs.existsSync(sourcePath)) {
-                console.error(`[error] ${section}/${item.code}: no existe el fichero de origen ${sourcePath}`);
-                continue;
-            }
-
-            const markdown = fs.readFileSync(sourcePath, 'utf8');
-            const content = convertMarkdownToHtml(markdown);
-            const outputPath = path.join(outputRoot, section, item.code, 'index.html');
-
-            fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-            fs.writeFileSync(outputPath, buildDocument(item.code, content), 'utf8');
-
-            generatedFiles.push(path.relative(projectRoot, outputPath));
-            console.log(`[ok] ${path.relative(projectRoot, outputPath)}  <-  ${path.relative(projectRoot, sourcePath)}`);
+            writeRedirect(
+                path.join(outputRoot, section, theme.id, 'index.html'),
+                `${defaultLocale}/index.html`
+            );
         }
+
+        // Índice de la sección: redirige al theme por defecto.
+        writeRedirect(
+            path.join(outputRoot, section, 'index.html'),
+            `${DEFAULT_THEME}/${defaultLocale}/index.html`
+        );
     }
 
-    // Índices de redirección: solo se crean si no existen
-    for (const section of sections) {
-        ensureFile(path.join(outputRoot, section, 'index.html'), buildRedirectPage('en-uk/index.html'));
-    }
-    ensureFile(path.join(outputRoot, 'index.html'), buildRedirectPage('policy/index.html'));
+    writeRedirect(path.join(outputRoot, 'index.html'), 'policy/index.html');
 
-    console.log(`\nSe han generado ${generatedFiles.length} ficheros en docs/legal/`);
+    console.log(`\nSe han generado ${generatedFiles.length} páginas legales por theme en docs/legal/`);
 }
 
 generate();
