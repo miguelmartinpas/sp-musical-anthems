@@ -295,7 +295,7 @@ function writeRedirect(filePath, target) {
 }
 
 function assertPlaceholdersResolved(markdown, section, themeId, code) {
-    const pending = ['{{appName}}', '{{supportEmail}}'].filter((token) => markdown.includes(token));
+    const pending = ['{{appName}}', '{{supportEmail}}', '{{#anthems}}', '{{/anthems}}'].filter((token) => markdown.includes(token));
     if (pending.length > 0) {
         throw new Error(
             `${section}/${themeId}/${code}: quedan tokens sin sustituir (${pending.join(', ')})`

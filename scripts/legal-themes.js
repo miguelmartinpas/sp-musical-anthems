@@ -34,9 +34,14 @@ function supportEmailFor(emailPrefix) {
         : 'musical.anthems+support@proton.me';
 }
 
+// `{{#anthems}}…{{/anthems}}`: todos los themes de este repo son de himnos, así que
+// el cuerpo se muestra siempre y solo se eliminan los marcadores.
+const ANTHEMS_BLOCK = /\{\{#anthems\}\}([\s\S]*?)\{\{\/anthems\}\}\n?/g;
+
 function renderLegalPlaceholders(markdown, themeId = DEFAULT_THEME) {
     const theme = themeFor(themeId);
     return markdown
+        .replace(ANTHEMS_BLOCK, (_match, body) => `${body}\n`)
         .split('{{appName}}')
         .join(theme.appName)
         .split('{{supportEmail}}')
