@@ -3,7 +3,7 @@
 /**
  * Registro de identidad legal por theme.
  *
- * Debe coincidir con `nameFor()` y los prefijos de correo de
+ * Debe coincidir con `nameFor()` y los prefijos de correo (`emailPrefix`) de
  * `app-boilerplate/scripts/android-themes.js` (ver `npm run check:legal`).
  */
 
@@ -16,6 +16,7 @@ const LEGAL_THEMES = [
     { id: 'e-musical-anthems', appName: 'Eusko Abendaren Ereserkia', emailPrefix: 'e' },
     { id: 'gl-musical-anthems', appName: 'Himno galego', emailPrefix: 'gl' },
     { id: 'an-musical-anthems', appName: 'Himno Andaluz', emailPrefix: 'an' },
+    { id: 'popular-christmas-music', appName: 'Popular Christmas Music', emailPrefix: 'pcm' },
 ];
 
 const THEME_IDS = LEGAL_THEMES.map((theme) => theme.id);
@@ -34,8 +35,9 @@ function supportEmailFor(emailPrefix) {
         : 'musical.anthems+support@proton.me';
 }
 
-// `{{#anthems}}…{{/anthems}}`: todos los themes de este repo son de himnos, así que
-// el cuerpo se muestra siempre y solo se eliminan los marcadores.
+// `{{#anthems}}…{{/anthems}}`: todos los themes de este repo (incluido
+// popular-christmas-music, `anthems: true` en el boilerplate) llevan la cláusula de
+// retirada de contenido, así que el cuerpo se muestra siempre y solo se eliminan los marcadores.
 const ANTHEMS_BLOCK = /\{\{#anthems\}\}([\s\S]*?)\{\{\/anthems\}\}\n?/g;
 
 function renderLegalPlaceholders(markdown, themeId = DEFAULT_THEME) {

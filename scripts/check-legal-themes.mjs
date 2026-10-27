@@ -26,9 +26,8 @@ try {
 
 const { LEGAL_THEMES } = require('./legal-themes.js');
 
-const expectedIds = appThemes
-    .map((theme) => theme.id)
-    .filter((id) => id.endsWith('-musical-anthems'));
+const appThemeById = new Map(appThemes.map((theme) => [theme.id, theme]));
+const expectedIds = appThemes.filter((theme) => theme.anthems).map((theme) => theme.id);
 
 const errors = [];
 const localIds = LEGAL_THEMES.map((theme) => theme.id);
@@ -45,7 +44,7 @@ for (const id of expectedIds) {
         errors.push(`${id}: nombre "${entry.appName}" ≠ "${expectedName}" (android-themes.js)`);
     }
 
-    const expectedPrefix = id.replace('-musical-anthems', '');
+    const expectedPrefix = appThemeById.get(id).emailPrefix ?? id.replace('-musical-anthems', '');
     if (entry.emailPrefix !== expectedPrefix) {
         errors.push(`${id}: prefijo "${entry.emailPrefix}" ≠ "${expectedPrefix}"`);
     }

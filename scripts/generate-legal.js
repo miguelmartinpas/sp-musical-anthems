@@ -23,9 +23,9 @@ const outputRoot = path.join(projectRoot, 'docs', 'legal');
 
 const sections = ['policy', 'terms'];
 
-// Solo se generan los themes cuyo id termina en "-musical-anthems".
-const THEME_SUFFIX = '-musical-anthems';
-const selectedThemes = LEGAL_THEMES.filter((theme) => theme.id.endsWith(THEME_SUFFIX));
+// Se generan todos los themes registrados en scripts/legal-themes.js
+// (incluido popular-christmas-music, cuyo id no termina en "-musical-anthems").
+const selectedThemes = LEGAL_THEMES;
 
 // ---------------------------------------------------------------------------
 // Conversión de markdown a HTML (subconjunto: encabezados, listas, tablas,
